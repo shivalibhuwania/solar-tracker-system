@@ -1,0 +1,122 @@
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
+#define led1 10
+#define led2 11
+#define led3 12
+#define led4 13
+
+#define m1 2
+#define m2 3
+
+int flag;
+
+void setup()
+{
+pinMode(led1, OUTPUT);
+pinMode(led2, OUTPUT);
+pinMode(led3, OUTPUT);
+pinMode(led4, OUTPUT);
+pinMode(m1, OUTPUT);
+pinMode(m2, OUTPUT);
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.print("Solar Tracker");
+  delay(2000);
+}
+
+void loop()
+{
+int val =analogRead(A0);
+int L1= 1024-val;
+val =analogRead(A1);
+int L2=1024- val;
+val =analogRead(A2);
+int L3=1024- val;
+
+Serial.print(L1);
+Serial.print(", ");
+Serial.print(L2);
+Serial.print(", ");
+Serial.println(L3);
+delay(500);
+
+lcd.clear();
+lcd.print("L1:");
+lcd.print(L1);
+lcd.print("    ");
+lcd.print("L2:");
+lcd.print(L2);
+lcd.print("    ");
+lcd.setCursor(0,1);
+lcd.print("L3:");
+lcd.print(L3);
+lcd.print("    ");
+
+if(L1>1000 and flag == 0)
+{
+lcd.clear();
+lcd.print("Morning");
+Serial.println("Morning");
+digitalWrite (led1,0);
+digitalWrite (led2,0);
+digitalWrite (led3,0);
+digitalWrite (led4,0);
+digitalWrite(m1,1);
+digitalWrite(m2,0);
+delay(700);
+digitalWrite(m1,0);
+digitalWrite(m2,0);
+delay(700);
+flag=1;
+}
+if(L2>1000 and flag == 1)
+{
+lcd.clear();
+lcd.print("Afternoon");
+Serial.println("Afternoon");
+digitalWrite(m1,1);
+digitalWrite(m2,0);
+delay(700);
+digitalWrite(m1,0);
+digitalWrite(m2,0);
+delay(700);
+flag=2;
+}
+
+if(L3>1000 and flag == 2)
+{
+lcd.clear();
+lcd.print("Evening");
+Serial.println("Evening");
+digitalWrite(m1,1);
+digitalWrite(m2,0);
+delay(700);
+digitalWrite(m1,0);
+digitalWrite(m2,0);
+delay(700);
+flag=3;
+digitalWrite (led1,1);
+digitalWrite (led2,1);
+digitalWrite (led3,1);
+digitalWrite (led4,1);
+}
+
+if(L3<900 and flag == 3)
+{
+lcd.clear();
+lcd.print("Night");
+Serial.println("Afternoon");
+digitalWrite(m1,0);
+digitalWrite(m2,1);
+delay(2100);
+digitalWrite(m1,0);
+digitalWrite(m2,0);
+delay(2100);
+flag=0;
+}
+}
+
+ 
+
+ 
+
